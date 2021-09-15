@@ -1,5 +1,6 @@
 import { songsList } from "../data/songs.js";
 import PlayInfo from "./play-info.js";
+import TrackBar from "./track-bar.js";
 
 const Playlist = (() => {
   //Data or State
@@ -73,6 +74,10 @@ const Playlist = (() => {
 
     currentSong.addEventListener("ended", () => {
       playNext();
+    });
+
+    currentSong.addEventListener("timeupdate", () => {
+      TrackBar.setState(currentSong)
     });
   };
 
