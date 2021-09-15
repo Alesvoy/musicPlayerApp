@@ -12,16 +12,61 @@ const Playlist = (() => {
 
   const init = () => {
     render();
+    listeners();
+  };
+
+  const changeAudioSrc = () => {
+    currentSong.src = songs[currentlyPlayingIndex].url;
+  };
+
+  const togglePlayPause = () => {
+    return currentSong.paused ? currentSong.play() : currentSong.pause();
+  };
+
+  const mainPlay = (clickedIndex) => {
+    if (currentlyPlayingIndex === clickedIndex) {
+      // toggle play or pause
+      console.log("same");
+      togglePlayPause();
+    } else {
+      console.log("new");
+      currentlyPlayingIndex = clickedIndex;
+      changeAudioSrc();
+      togglePlayPause();
+    }
+  };
+
+  const listeners = () => {
+    playlistEl.addEventListener("click", (event) => {
+      if (event.target && event.target.matches(".fa")) {
+        const listElem = event.target.parentNode.parentNode;
+        const listElemIndex = [...listElem.parentElement.children].indexOf(
+          listElem
+        );
+        mainPlay(listElemIndex);
+        render();
+      }
+    });
   };
 
   const render = () => {
     let markup = "";
 
+    const toggleIcon = (itemIndex) => {
+      if (currentlyPlayingIndex === itemIndex) {
+        return currentSong.paused ? "fa-play" : "fa-pause";
+      } else {
+        return "fa-play";
+      }
+    };
+
     songs.forEach((songObj, index) => {
       markup += `
-      <li class="playlist__song">
+      <li class="playlist__song ${
+        index === currentlyPlayingIndex ? "playlist__song--active" : ""
+      }">
         <div class="play-pause">
-          <i class="fa fa-play pp-icon"></i>
+          <i class="fa ${toggleIcon(index)} pp-icon"></i>
         </div>
         <div class="playlist__song-details">
           <span class="playlist__song-name">${songObj.title}</span>
